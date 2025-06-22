@@ -1,4 +1,4 @@
-from hearinglosssimulator.gui.myqt import QT
+from .myqt import QT
 import pyqtgraph as pg
 
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 import sounddevice as sd
 
 
-from hearinglosssimulator.gui.guitools import FreqGainDuration, play_sinus, play_input_to_output
+from .guitools import FreqGainDuration, play_sinus, play_input_to_output
 
 
 

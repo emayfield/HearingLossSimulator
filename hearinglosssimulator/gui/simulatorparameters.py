@@ -1,4 +1,4 @@
-from hearinglosssimulator.gui.myqt import QT
+from .myqt import QT
 import pyqtgraph as pg
 
 import numpy as np
@@ -6,7 +6,7 @@ import numpy as np
 import sounddevice as sd
 
 
-from hearinglosssimulator.gui.guitools import get_dict_from_group_param
+from .guitools import get_dict_from_group_param
 
 
  #~ nb_channel=1, sample_rate=44100., dtype='float32',

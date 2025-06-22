@@ -1,15 +1,14 @@
-
-import hearinglosssimulator as hls
-
-from hearinglosssimulator.gui.myqt import QT
+from .myqt import QT
 import pyqtgraph as pg
 
-from hearinglosssimulator.gui.gpuselection import GpuDeviceSelection
+from .gpuselection import GpuDeviceSelection
 
+from soundgenerator import moving_erb_noise
 
 import numpy as np
 
-
+from invcomp import InvComp
+from invcgc import InvCGC
 
 _params = [
     {'name': 'chunksize', 'type': 'list', 'values': [256, 1024] },
@@ -63,7 +62,7 @@ class WindowDebugGPU(QT.QWidget):
         
         length = int(chunksize*nloop)
 
-        in_buffer = hls.moving_erb_noise(length, sample_rate=sample_rate)
+        in_buffer = moving_erb_noise(length, sample_rate=sample_rate)
         in_buffer = np.tile(in_buffer[:, None],(1, nb_channel))
 
         loss_params = {  'left' : {'freqs' :  [125., 250., 500., 1000., 2000., 4000., 8000.],
@@ -82,7 +81,7 @@ class WindowDebugGPU(QT.QWidget):
                         #~ sample_rate, node_conf=node_conf, buffersize_margin=backward_chunksize)
 
 
-        for _class in [hls.InvCGC, hls.InvComp]:
+        for _class in [InvCGC, InvComp]:
         #~ for _class in [hls.InvComp, hls.InvComp2,]:
         #~ for _class in [hls.InvComp,]:
         #~ for _class in [hls.InvComp2,]:
@@ -92,7 +91,7 @@ class WindowDebugGPU(QT.QWidget):
             processing.create_opencl_context(gpu_platform_index=gpu_platform_index, gpu_device_index=gpu_device_index)
             print(processing.ctx)
             processing.initialize(gpu_platform_index, gpu_device_index)
-            online_arrs = hls.run_instance_offline(processing, in_buffer, chunksize, sample_rate,
+            online_arrs = run_instance_offline(processing, in_buffer, chunksize, sample_rate,
                         buffersize_margin=backward_chunksize, time_stats=True)
 
 

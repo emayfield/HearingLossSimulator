@@ -10,7 +10,7 @@
 import numpy as np
 import scipy
 import scipy.signal
-from .tools import play_with_vlc
+from gui.tools import play_with_vlc
 
 
 

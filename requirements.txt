@@ -1,4 +1,7 @@
 numpy
 scipy
-#pyopencl #issue on RTD
-#sounddevice #issue on RTD
+pyopencl #issue on RTD
+sounddevice #issue on RTD
+matplotlib
+PyQt5
+pyqtgraph

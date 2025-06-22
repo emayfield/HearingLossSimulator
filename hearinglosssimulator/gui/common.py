@@ -185,7 +185,7 @@ class BaseMultiBand:
             self._save_filters()
         
     
-    def initialize(self, gpu_platform_index, gpu_device_index):
+    def initialize(self, gpu_platform_index=0, gpu_device_index=0):
         if self.use_filter_cache and self._attr_to_save is not None:
             self._load_or_make_filters()
         else:

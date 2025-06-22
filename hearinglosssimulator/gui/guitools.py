@@ -6,9 +6,7 @@ import numpy as np
 import sounddevice as sd
 
 import time
-
-import hearinglosssimulator as hls
-
+from soundgenerator import several_sinus
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib import pyplot
@@ -51,7 +49,9 @@ class FreqGainDuration(QT.QWidget):
         
         self.set()
 
-    def set(self, gain = -15, duration = 2., freq = 1000.):
+
+
+    def set(self, gain = -15, duration = 2, freq = 1000):
         pass
         self.spinbox_gain.setValue(gain)
         self.spinbox_duration.setValue(duration)
@@ -80,7 +80,7 @@ def play_sinus(freq, dbgain, duration, device='default', nb_channel=2):
     
     
     length = int(sample_rate * duration)+1
-    sound = hls.several_sinus(length, freqs=[freq], sample_rate=sample_rate, ampl = 1.)
+    sound = several_sinus(length, freqs=[freq], sample_rate=sample_rate, ampl = 1.)
     sound = np.tile(sound[:, None],(1, nb_channel))
     gain = 10**(dbgain/20.)
     sound *= gain

@@ -8,10 +8,10 @@ import time
 
 from collections import OrderedDict
 
-from hearinglosssimulator.gui.guitools import MplCanvas
+from .guitools import MplCanvas
 
 
-from hearinglosssimulator.gui.myqt import DebugDecorator
+from .myqt import DebugDecorator
 
 
 

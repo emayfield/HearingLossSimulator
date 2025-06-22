@@ -1,13 +1,14 @@
 from .common_mainwindow import *
 
 import numpy as np
-import hearinglosssimulator.gui.wifidevice.packet_types as pt
-from hearinglosssimulator.gui.wifidevice.qwificlient import QWifiClient, BaseThreadStream
+import .wifidevice.packet_types as pt
+from .wifidevice.qwificlient import QWifiClient, BaseThreadStream
 
-from hearinglosssimulator.gui.wifidevice.wifidevicewidget import WifiDeviceWidget
-from hearinglosssimulator.gui.wifidevice.wifideviceparameters import WifiDeviceParameter
+from .wifidevice.wifidevicewidget import WifiDeviceWidget
+from .wifidevice.wifideviceparameters import WifiDeviceParameter
 
-
+from .invcgc import InvCGC
+from .invcomp import InvComp
 """
 Calmibration date 2017-06-07
 
@@ -356,7 +357,7 @@ class WifiDeviceMainWindow(CommonMainWindow):
         params['loss_params'] = loss_params
         params['bypass'] = self.but_enable_bypass.isChecked()
         print('bypass:', params['bypass'])
-        classes = {'InvCGC': hls.InvCGC, 'InvComp': hls.InvComp}
+        classes = {'InvCGC': InvCGC, 'InvComp': InvComp}
         _Class = classes[simulator_engine]
         #~ print(_Class)
         
@@ -386,7 +387,7 @@ class WifiDeviceMainWindow(CommonMainWindow):
             self.thread_simulator.set_bypass(bypass)
     
     def compute_filters(self):
-        print('compute_filters')
+        print('compute_filters 2')
         with self.mutex:
             try:
                 self.setup_processing()
@@ -394,8 +395,7 @@ class WifiDeviceMainWindow(CommonMainWindow):
             except Exception as e:
                 print(e)
                 
-            else:
-                #~ self.but_start_stop.setEnabled(True)
-                self.but_enable_bypass.setEnabled(True)
+            self.but_start_stop.setEnabled(True)
+            self.but_enable_bypass.setEnabled(True)
     
 

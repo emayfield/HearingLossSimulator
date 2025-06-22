@@ -1,9 +1,10 @@
 from .common_mainwindow import *
 
-
-
+from .invcgc import InvCGC
+from .invcomp import InvComp
 
 class AudioDeviceMainWindow(CommonMainWindow):
+    print("test 2")
     _prefix_application = 'AudioDevice_'
     
     def __init__(self, parent = None):
@@ -91,56 +92,74 @@ class AudioDeviceMainWindow(CommonMainWindow):
                         self.audioDeviceSelection.get_configuration()['output_device'])
 
     def setup_processing(self):
-        #~ print('setup_processing')
+        print('setup_processing 1')
         # take from UI
         calibration = self.calibrationWidget.get_configuration()['spl_calibration_at_zero_dbfs']
         
         loss_params = self.hearingLossParameter.get_configuration()
 
+        print('loss_params')
         #DEBUG
         loss_params = { 'left' : {'freqs' : [ 125*2**i  for i in range(7) ], 'compression_degree': [0]*7, 'passive_loss_db' : [0]*7 } }
         loss_params['right'] = loss_params['left']
         
+
         for k in loss_params:
             print(k)
             print(loss_params[k]['freqs'])
             print(loss_params[k]['compression_degree'])
             print(loss_params[k]['passive_loss_db'])
 
-        
+        print('simulator_params')
         simulator_params = self.simulatorParameter.get_configuration()
         simulator_engine = simulator_params.pop('simulator_engine')
-        
+        print('simulator_engine: ', simulator_engine)
+        if simulator_engine == None or simulator_engine == '':
+            simulator_engine = 'InvCGC'
         #make params
         params ={}
         params.update(simulator_params)
+        params['nb_channel'] = 1
         params['calibration'] = calibration
         params['loss_params'] = loss_params
         params['bypass'] = self.but_enable_bypass.isChecked()
         #~ print(params)
-        classes = {'InvCGC': hls.InvCGC, 'InvComp': hls.InvComp}
+        print('classes')
+        classes = {'InvCGC': InvCGC, 'InvComp': InvComp}
+        print(classes)
         _Class = classes[simulator_engine]
+
+        print('classes ok')
         #~ print(_Class)
         
+        print('params')
         #~ print(self.sample_rate)
         self.processing = _Class(sample_rate=self.sample_rate, 
                     apply_configuration_at_init=False, use_filter_cache=True,
                     debug_mode=False, **params)
         
-        
+        print(self.processing)
+        print('processing')
         platform_index = self.gpuDeviceSelection.get_configuration()['platform_index']
         device_index = self.gpuDeviceSelection.get_configuration()['device_index']
+
+        print('platform_index: ', platform_index)
+        print('device_index: ', device_index)
         self.processing.create_opencl_context(
                 gpu_platform_index = platform_index,
                 gpu_device_index = device_index)
         
+        print('initialize')
         self.processing.initialize()
-    
+        print('setup_processing OK')
+
     def setup_audio_stream(self):
         
         nb_channel = self.processing.nb_channel
         chunksize = self.processing.chunksize
-        
+        print('nb_channel: ', nb_channel)
+        print('chunksize: ', chunksize)
+        print('device: ', self.audio_device)
         self.index = 0
         def callback(indata, outdata, frames, time, status):
             if status:
@@ -156,23 +175,34 @@ class AudioDeviceMainWindow(CommonMainWindow):
         
         latency = 'low'
         #~ latency = 'high'
-        self.stream = sd.Stream(channels=nb_channel, callback=callback, samplerate=self.sample_rate,
-                        blocksize=chunksize, latency=latency, device=self.audio_device)
         
+        # Fix: Specify channels for input and output separately
+        input_device, output_device = self.audio_device
+        self.stream = sd.Stream(
+            device=(input_device, output_device),
+            channels=(1, 1),  # (input_channels, output_channels)
+            callback=callback, 
+            samplerate=self.sample_rate,
+            blocksize=chunksize, 
+            latency=latency
+        )
+        
+        print('setup_audio_stream OK')
         self.audio_stream_done = True
 
     def compute_filters(self):
-        print('compute_filters')
+        print('compute_filters 3')
         with self.mutex:
             try:
+                print('setup_processing 2')
                 self.setup_processing()
+                print('setup_audio_stream 2')
                 self.setup_audio_stream()
             except Exception as e:
                 print(e)
                 
-            else:
-                self.but_start_stop.setEnabled(True)
-                self.but_enable_bypass.setEnabled(True)
+            self.but_start_stop.setEnabled(True)
+            self.but_enable_bypass.setEnabled(True)
     
     
     def set_bypass(self, bypass):

@@ -1,4 +1,4 @@
-from hearinglosssimulator.gui.myqt import QT
+from .myqt import QT
 import pyqtgraph as pg
 
 import numpy as np

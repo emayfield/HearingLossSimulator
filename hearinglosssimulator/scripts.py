@@ -20,7 +20,7 @@ txt_command_list = ', '.join(comand_list)
 
 def open_audiodevice_mainwindow():
     
-    from hearinglosssimulator.gui.audiodevice_mainwindow import AudioDeviceMainWindow
+    from gui.audiodevice_mainwindow import AudioDeviceMainWindow
     import pyqtgraph as pg
     
     app = pg.mkQApp()
@@ -108,10 +108,10 @@ def hls():
 
 
 if __name__=='__main__':
-    #~ open_audiodevice_mainwindow()
+    open_audiodevice_mainwindow()
     #~ open_wifidevice_mainwindow()
     #~ open_debug_wifi()
-    open_debug_gpu()
+    #open_debug_gpu()
     #~ open_debug_audio()
 
 

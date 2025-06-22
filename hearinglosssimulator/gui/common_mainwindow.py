@@ -11,8 +11,6 @@ import sounddevice as sd
 
 #~ import pyacq
 
-import hearinglosssimulator as hls
-
 from .lossparameters import HearingLossParameter
 from .calibration import Calibration
 from .audioselection import AudioDeviceSelection
@@ -161,17 +159,20 @@ class CommonMainWindow(QT.QMainWindow):
 
 
     def compute_filters(self):
-        print('compute_filters')
+        print('compute_filters 1')
         with self.mutex:
+            print('mutex OK')
             try:
+                print('setup_processing')
                 self.setup_processing()
+                print('setup_audio_stream')
                 self.setup_audio_stream()
             except Exception as e:
                 print(e)
                 
-            else:
-                #~ self.but_start_stop.setEnabled(True)
-                self.but_enable_bypass.setEnabled(True)
+            print('compute_filters OK')
+            self.but_start_stop.setEnabled(True)
+            self.but_enable_bypass.setEnabled(True)
     
     
     
